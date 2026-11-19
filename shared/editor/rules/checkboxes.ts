@@ -24,13 +24,23 @@ function isListItem(token: Token): boolean {
 
 function isListOpen(token: Token): boolean {
   return (
-    token.type === "bullet_list_open" || token.type === "ordered_list_open"
+    token.type === "bullet_list_open" ||
+    token.type === "ordered_list_open" ||
+    // The enclosing list of the item being processed may already have been
+    // converted by a sibling item handled earlier in the backwards pass. It
+    // must still end the search, otherwise a neighbouring list is converted
+    // instead of this one.
+    token.type === "checkbox_list_open"
   );
 }
 
 function isListClose(token: Token): boolean {
   return (
-    token.type === "bullet_list_close" || token.type === "ordered_list_close"
+    token.type === "bullet_list_close" ||
+    token.type === "ordered_list_close" ||
+    // Counterpart of isListOpen – stop at an already converted list so its
+    // neighbouring lists are left untouched.
+    token.type === "checkbox_list_close"
   );
 }
 

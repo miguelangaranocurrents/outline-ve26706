@@ -398,6 +398,9 @@ class UiStore {
   /**
    * Sets the right sidebar panel displayed in the given split view pane.
    *
+   * The primary pane's panel is persisted so that reopening the app restores
+   * the same sidebar state; the secondary pane is session only.
+   *
    * @param panel the panel to display, or null to close the sidebar.
    * @param pane the split view pane, defaults to the primary pane.
    */
@@ -408,9 +411,11 @@ class UiStore {
   ): void => {
     if (pane === "secondary") {
       this.secondaryRightSidebar = panel;
-    } else {
-      this.rightSidebar = panel;
+      return;
     }
+
+    this.rightSidebar = panel;
+    this.persist();
   };
 
   @action
